@@ -1,0 +1,53 @@
+CREATE TABLE DigitalBooksUser(
+UserID INT IDENTITY(1,1) Primary Key,
+UserName VARCHAR(100) NOT NULL UNIQUE,
+Email Varchar(100) NOT NULL UNIQUE,
+UserPass Varchar(100) NOT NULL,
+UserRole Varchar(50) NOT NULL
+)
+
+CREATE TABLE Book(
+BookID INT IDENTITY(1,1) PRIMARY KEY,
+Logo varbinary (max),
+Title VARCHAR(500) NOT NULL UNIQUE,
+Category VARCHAR(100) NOT NULL,
+Price Decimal(10,2) NOT NULL,
+AuthorName varchar(100) FOREIGN KEY REFERENCES DigitalBooksUser(UserName) NOT NULL,
+Publisher varchar(100) NOT NULL,
+PublishedDate DATETIME NOT NULL,
+Content ntext NOT NULL,
+Active Bit NOT NULL,
+CreatedDate DATETIME NOT NULL,
+ModifiedDate DATETIME NOT NULL
+)
+
+CREATE TABLE Payment(
+PaymentID INT IDENTITY(1,1) PRIMARY KEY,
+BuyerEmail Varchar(100) NOT NULL,
+BuyerName varchar(100) NOT NULL ,
+BookID INT NOT NULL FOREIGN KEY REFERENCES Book(BookID),
+PaymentDate DATETIME NOT NULL,
+Refund BIT NOT NULL
+)
+
+create view as PaymentDetails
+as 
+Select p.PaymentID, p.BuyerEmail, p.BuyerName, b.BookName, p.PaymentDate 
+from Payment p, Book b
+where p.BookID == b.BookID
+
+
+INSERT INTO [dbo].[DigitalBooksUser] VALUES ('Nova', 'nova@gmail.com', '123456', 'Author');
+INSERT INTO [dbo].[DigitalBooksUser] VALUES ('Nick', 'nick@gmail.com', '123456', 'Author');
+INSERT INTO [dbo].[DigitalBooksUser] VALUES ('Sam', 'sam@gmail.com', '123456', 'Author');
+INSERT INTO [dbo].[DigitalBooksUser] VALUES ('Mark', 'mark@gmail.com', '123456', 'Reader');
+INSERT INTO [dbo].[DigitalBooksUser] VALUES ('Leo', 'leo@gmail.com', '123456', 'Reader');
+
+INSERT INTO [dbo].[Book] VALUES (null,'C', 'Programming Language',  643.78, 'Nova', 'Publisher1', GETDATE(), 'C is a programming Language', 1, GETDATE(), GETDATE());          
+INSERT INTO [dbo].[Book] VALUES (null,'Java', 'Programming Language',  743.78, 'Leo', 'Publisher2', GETDATE(), 'Java is a programming Language', 1, GETDATE(), GETDATE());
+INSERT INTO [dbo].[Book] VALUES (null,'C#', 'Programming Language',  843.78, 'Nick', 'Publisher3', GETDATE(), 'C# is a programming Language', 1, GETDATE(), GETDATE());
+INSERT INTO [dbo].[Book] VALUES (null,'Angular', 'Framework',  543.78, 'Sam', 'Publisher4', GETDATE(), 'Angular is a framework', 1, GETDATE(), GETDATE());
+INSERT INTO [dbo].[Book] VALUES (null,'Azure', 'Cloud Computing',  943.78, 'Mark', 'Publisher5', GETDATE(), 'Azure is a cloud computing platform ', 1, GETDATE(), GETDATE());
+
+INSERT INTO [dbo].[Payment] VALUES ('mark@gmail.com', 'Mark', 3, GETDATE(),0);
+INSERT INTO [dbo].[Payment] VALUES ('mark@leo@gmail.com', 'Leo', 5, GETDATE(),0);
